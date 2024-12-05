@@ -102,9 +102,55 @@ schedule_table = [
     for i, time_slot in enumerate(all_time_slots)
 ]
 
-# Display Results
-st.write("Final Optimal Schedule:")
-st.table(schedule_table)
+# Styling the table using HTML and CSS
+table_html = """
+<style>
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 18px;
+        text-align: left;
+    }
+    .schedule-table th {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+    }
+    .schedule-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    .schedule-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    .schedule-table tr:hover {
+        background-color: #f1f1f1;
+    }
+    .schedule-table th, .schedule-table td {
+        text-align: center;
+    }
+</style>
+<table class="schedule-table">
+    <tr>
+        <th>Time Slot</th>
+        <th>Program</th>
+    </tr>
+"""
+
+# Add the rows to the table
+for row in schedule_table:
+    table_html += f"""
+    <tr>
+        <td>{row['Time Slot']}</td>
+        <td>{row['Program']}</td>
+    </tr>
+    """
+
+table_html += "</table>"
+
+# Display the styled table in Streamlit
+st.markdown(table_html, unsafe_allow_html=True)
 
 # Display Total Ratings
 st.write("Total Ratings:", fitness_function(genetic_schedule))
