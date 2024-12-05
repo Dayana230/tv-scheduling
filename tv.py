@@ -21,17 +21,10 @@ file_path = "program_ratings.csv"
 # Get the data in the required format
 program_ratings_dict = read_csv_to_dict(file_path)
 
-# Display initial data (optional)
-st.write("Program Ratings Data:")
-st.write(program_ratings_dict)
-
-# Genetic Algorithm Parameters (User Inputs)
+# Sidebar for Genetic Algorithm Parameters
 st.sidebar.title("Genetic Algorithm Parameters")
 CO_R = st.sidebar.slider("Crossover Rate", min_value=0.0, max_value=0.95, value=0.8, step=0.01)
 MUT_R = st.sidebar.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.02, step=0.01)
-GEN = st.sidebar.number_input("Generations", min_value=1, value=100)
-POP = st.sidebar.number_input("Population Size", min_value=2, value=50)
-EL_S = st.sidebar.number_input("Elitism Size", min_value=1, value=2)
 
 ratings = program_ratings_dict
 all_programs = list(ratings.keys())  # All programs
@@ -59,7 +52,7 @@ def mutate(schedule):
     return schedule
 
 # Genetic Algorithm
-def genetic_algorithm(initial_schedule, generations=GEN, population_size=POP, crossover_rate=CO_R, mutation_rate=MUT_R, elitism_size=EL_S):
+def genetic_algorithm(initial_schedule, generations=100, population_size=50, crossover_rate=CO_R, mutation_rate=MUT_R, elitism_size=2):
     population = [initial_schedule]
     for _ in range(population_size - 1):
         random_schedule = initial_schedule.copy()
@@ -94,13 +87,16 @@ initial_schedule = random.sample(all_programs, len(all_programs))
 
 # Run Genetic Algorithm
 st.write("Running Genetic Algorithm with the following parameters:")
-st.write(f"Crossover Rate: {CO_R}, Mutation Rate: {MUT_R}, Generations: {GEN}, Population Size: {POP}, Elitism Size: {EL_S}")
+st.write(f"Crossover Rate: {CO_R}, Mutation Rate: {MUT_R}")
 
 genetic_schedule = genetic_algorithm(initial_schedule)
 
+# Prepare the schedule for display
+schedule_table = [{"Time Slot": f"{all_time_slots[i]:02d}:00", "Program": program} for i, program in enumerate(genetic_schedule)]
+
 # Display Results
 st.write("Final Optimal Schedule:")
-for time_slot, program in enumerate(genetic_schedule):
-    st.write(f"Time Slot {all_time_slots[time_slot]:02d}:00 - Program {program}")
+st.table(schedule_table)
 
+# Display Total Ratings
 st.write("Total Ratings:", fitness_function(genetic_schedule))
