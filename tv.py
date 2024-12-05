@@ -28,7 +28,7 @@ MUT_R = st.sidebar.slider("Mutation Rate", min_value=0.01, max_value=0.05, value
 
 ratings = program_ratings_dict
 all_programs = list(ratings.keys())  # All programs
-all_time_slots = list(range(6, 24))  # Time slots
+all_time_slots = list(range(6, 24))  # Time slots from 06:00 to 23:00
 
 # Fitness Function
 def fitness_function(schedule):
@@ -91,8 +91,16 @@ st.write(f"Crossover Rate: {CO_R}, Mutation Rate: {MUT_R}")
 
 genetic_schedule = genetic_algorithm(initial_schedule)
 
+# Ensure the schedule covers all time slots
+if len(genetic_schedule) < len(all_time_slots):
+    remaining_slots = len(all_time_slots) - len(genetic_schedule)
+    genetic_schedule.extend(random.choices(all_programs, k=remaining_slots))
+
 # Prepare the schedule for display
-schedule_table = [{"Time Slot": f"{all_time_slots[i]:02d}:00", "Program": program} for i, program in enumerate(genetic_schedule)]
+schedule_table = [
+    {"Time Slot": f"{time_slot:02d}:00", "Program": genetic_schedule[i] if i < len(genetic_schedule) else "No Program"}
+    for i, time_slot in enumerate(all_time_slots)
+]
 
 # Display Results
 st.write("Final Optimal Schedule:")
