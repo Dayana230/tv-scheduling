@@ -90,6 +90,17 @@ st.write(f"Crossover Rate: {CO_R}, Mutation Rate: {MUT_R}")
 
 genetic_schedule = genetic_algorithm(initial_schedule)
 
+# Ensure the schedule covers all time slots
+if len(genetic_schedule) < len(all_time_slots):
+    remaining_slots = len(all_time_slots) - len(genetic_schedule)
+    genetic_schedule.extend(random.choices(all_programs, k=remaining_slots))
+
+# Prepare the schedule for display
+schedule_table = [
+    {"Time Slot": f"{time_slot:02d}:00", "Program": genetic_schedule[i] if i < len(genetic_schedule) else "No Program"}
+    for i, time_slot in enumerate(all_time_slots)
+]
+
 # Display Results in a Styled Table
 table_html = "<table style='width:100%; border-collapse: collapse;'>"
 table_html += "<tr style='background-color: #4CAF50; color: #fff;'><th>Time Slot</th><th>Program</th></tr>"
