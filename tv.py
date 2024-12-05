@@ -92,7 +92,7 @@ genetic_schedule = genetic_algorithm(initial_schedule)
 
 # Display Results in a Styled Table
 table_html = "<table style='width:100%; border-collapse: collapse;'>"
-table_html += "<tr style='background-color: #333; color: #fff;'><th>Time Slot</th><th>Program</th></tr>"
+table_html += "<tr style='background-color: #4CAF50; color: #fff;'><th>Time Slot</th><th>Program</th></tr>"
 
 for time_slot, program in enumerate(genetic_schedule):
     # Alternate row colors for better readability
