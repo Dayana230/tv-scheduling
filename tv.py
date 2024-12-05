@@ -7,8 +7,7 @@ def read_csv_to_dict(file_path):
     program_ratings = {}
     with open(file_path, mode='r', newline='') as file:
         reader = csv.reader(file)
-        # Skip the header
-        header = next(reader)
+        header = next(reader)  # Skip the header
         for row in reader:
             program = row[0]
             ratings = [float(x) for x in row[1:]]  # Convert the ratings to floats
@@ -28,7 +27,7 @@ MUT_R = st.sidebar.slider("Mutation Rate", min_value=0.01, max_value=0.05, value
 
 ratings = program_ratings_dict
 all_programs = list(ratings.keys())  # All programs
-all_time_slots = list(range(6, 24))  # Time slots from 06:00 to 23:00
+all_time_slots = list(range(6, 24))  # Time slots
 
 # Fitness Function
 def fitness_function(schedule):
@@ -91,61 +90,15 @@ st.write(f"Crossover Rate: {CO_R}, Mutation Rate: {MUT_R}")
 
 genetic_schedule = genetic_algorithm(initial_schedule)
 
-# Ensure the schedule covers all time slots
-if len(genetic_schedule) < len(all_time_slots):
-    remaining_slots = len(all_time_slots) - len(genetic_schedule)
-    genetic_schedule.extend(random.choices(all_programs, k=remaining_slots))
+# Display Results in a Styled Table
+table_html = "<table style='width:100%; border-collapse: collapse;'>"
+table_html += "<tr style='background-color: #333; color: #fff;'><th>Time Slot</th><th>Program</th></tr>"
 
-# Prepare the schedule for display
-schedule_table = [
-    {"Time Slot": f"{time_slot:02d}:00", "Program": genetic_schedule[i] if i < len(genetic_schedule) else "No Program"}
-    for i, time_slot in enumerate(all_time_slots)
-]
-
-# Styling the table using HTML and CSS
-table_html = """
-<style>
-    .schedule-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        font-size: 18px;
-        text-align: left;
-    }
-    .schedule-table th {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-    }
-    .schedule-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-    .schedule-table tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-    .schedule-table tr:hover {
-        background-color: #f1f1f1;
-    }
-    .schedule-table th, .schedule-table td {
-        text-align: center;
-    }
-</style>
-<table class="schedule-table">
-    <tr>
-        <th>Time Slot</th>
-        <th>Program</th>
-    </tr>
-"""
-
-# Add the rows to the table
-for row in schedule_table:
-    table_html += f"""
-    <tr>
-        <td>{row['Time Slot']}</td>
-        <td>{row['Program']}</td>
-    </tr>
-    """
+for time_slot, program in enumerate(genetic_schedule):
+    # Alternate row colors for better readability
+    row_color = "#f2f2f2" if time_slot % 2 == 0 else "#ffffff"
+    time_label = f"{all_time_slots[time_slot]:02d}:00"
+    table_html += f"<tr style='background-color: {row_color};'><td>{time_label}</td><td>{program}</td></tr>"
 
 table_html += "</table>"
 
