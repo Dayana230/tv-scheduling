@@ -107,7 +107,7 @@ table_html += "<tr style='background-color: #4CAF50; color: #FFFFFF;'><th>Time S
 
 for time_slot, program in enumerate(genetic_schedule):
     # Alternate row colors for better readability
-    row_color = "#330066" if time_slot % 2 == 0 else "#808080"
+    row_color = "#330066" if time_slot % 2 == 0 else "#A9A9A9"
     time_label = f"{all_time_slots[time_slot]:02d}:00"
     table_html += f"<tr style='background-color: {row_color};'><td>{time_label}</td><td>{program}</td></tr>"
 
